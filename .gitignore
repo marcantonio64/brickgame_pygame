@@ -1,0 +1,4 @@
+.vscode/
+__pycache__/
+games/__pycache__/
+tests/__pycache__/
