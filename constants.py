@@ -37,4 +37,4 @@ BORDER_WIDTH = int(WINDOW_WIDTH/111)
 
 # Time handling.
 TICK_RATE = 16  # Minimum time interval, in milliseconds.
-FPS = int(1000/TICK_RATE)  # Approx. 60 when TICK_RATE is 16.
+FPS = int(1000/TICK_RATE)  # Approx. 60 when `TICK_RATE` is 16.
