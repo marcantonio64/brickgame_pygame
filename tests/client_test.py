@@ -1,8 +1,4 @@
-"""
-Testing some `client.py` elements.
-
-See `screens_test.py` for ``BaseClient.load_image()``.
-"""
+""" Testing some `client.py` elements. """
 
 import sys
 import pygame
