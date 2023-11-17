@@ -245,7 +245,7 @@ class Bomb:
         """
 
         a, b = CONVERT[direction]
-        for bomb in Bomb._bombs:
+        for bomb in Bomb._bombs[::-1]:
             # Move each component using `.set_position()`.
             for block in bomb:
                 i, j = block.coords
