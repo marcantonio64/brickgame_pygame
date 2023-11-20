@@ -703,35 +703,52 @@ class GamePreview:
             
             self.render.draw(surface)
     
-    # Model for more screens
-    #
-    #            sketch = { 0: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       1: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       2: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       3: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       4: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       5: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       6: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       7: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       8: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                       9: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      10: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      11: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      12: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      13: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      14: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      15: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      16: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      17: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      18: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-    #                      19: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)}
-    #
-    #                      for j in sketch.keys():
-    #                          for i in sketch[j]:
-    #                              Block(i, j).add(self.render)
-    #
-    #                      self.render.draw(surface)
+# Template for more screens.
+'''
+class Newgamei(BaseScreen):
+    """ ith preview for Newgame. """
+    
+    def __init__(self) -> None:
+        Background()
+        super().__init__()
+    
+    def draw(self, surface):
+        """
+        Positioning the `Block` objects in a 10x20 grid.
 
+        Parameters
+        ----------
+        surface : pygame.Surface
+            Where to draw.
+        """
+        
+        sketch = { 0: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   1: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   2: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   3: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   4: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   5: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   6: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   7: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   8: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                   9: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  10: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  11: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  12: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  13: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  14: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  15: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  16: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  17: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  18: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                  19: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)}
+
+        for j in sketch.keys():
+            for i in sketch[j]:
+                Block(i, j).add(self.render)
+
+        self.render.draw(surface)
+'''
 
 def show_high_scores():
     """ Read, format, and show all entries from `high-scores.json`. """
@@ -755,7 +772,7 @@ def show_high_scores():
     
     # Set a font.
     font = pygame.font.SysFont(None,
-                               size=12 * PIXEL_SIDE,
+                               size=12*PIXEL_SIDE,
                                )
 
     # Draw the high scores.
