@@ -37,6 +37,9 @@ the name of the game, for instance:
 python -m brickgame_pygame.games.tetris
 ```
 
+## Inspirations
+Gustavo Barbieri's pygame tutorial: [Introduction to Game Development using PyGame](https://old.gustavobarbieri.com.br/jogos/jogo/doc/).
+
 ## Metadata
 Author: marcantonio64
 
