@@ -73,10 +73,10 @@ class Background(BaseScreen):
         
         # Border
         border = pygame.Rect(0, 0, *RES)
-        pygame.draw.rect(surface=surface,
-                         color=LINE_COLOR,
-                         rect=border,
-                         width=BORDER_WIDTH,
+        pygame.draw.rect(surface,
+                         LINE_COLOR,
+                         border,
+                         BORDER_WIDTH,
                          )
         
         # Grid

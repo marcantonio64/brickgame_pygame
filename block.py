@@ -89,7 +89,7 @@ class Block(pygame.sprite.Sprite):
         # Outer square
         side = PIXEL_SIDE*10
         square = pygame.Rect(0, 0, side, side)
-        pygame.draw.rect(surface, self._color, square, width=PIXEL_SIDE)
+        pygame.draw.rect(surface, self._color, square, PIXEL_SIDE)
 
         # Inner square
         dist = 2*PIXEL_SIDE

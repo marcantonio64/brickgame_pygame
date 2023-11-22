@@ -49,7 +49,7 @@ class Client3(Client2):
             self.image,
             LINE_COLOR,
             pygame.Rect(0, 0, BLOCK_SIDE, BLOCK_SIDE),
-            width=PIXEL_SIDE,
+            PIXEL_SIDE,
         )
         # Update (blit) the drawing to the smaller surface.
         self.image.blit(self.image, (0, 0))
@@ -82,18 +82,24 @@ class Client4(Client3):
 def main(args):
     """ Output-generating commands. """
 
-    if args[1] == "1":  # Creating the window and keeping it open.
-        client = Client1()
-        client.start()
-    elif args[1] == "2":  # Changing title and background.
-        client = Client2()
-        client.start()
-    elif args[1] == "3":  # Filling a line with squares.
-        client = Client3()
-        client.start()
-    elif args[1] == "4":  # Moving a square.
-        client = Client4()
-        client.start()
+    if len(args) != 2:
+        print("Please provide one argument to specify the class, for example:")
+        print("python -m brickgame_pygame.tests.client_test 1")
+    else:
+        if args[1] == "1":  # Creating the window and keeping it open.
+            client = Client1()
+            client.start()
+        elif args[1] == "2":  # Changing title and background.
+            client = Client2()
+            client.start()
+        elif args[1] == "3":  # Filling a line with squares.
+            client = Client3()
+            client.start()
+        elif args[1] == "4":  # Moving a square.
+            client = Client4()
+            client.start()
+        else:
+            print("Client", args[1], " was not implemented yet.", sep="")
 
 
 if __name__ == '__main__':

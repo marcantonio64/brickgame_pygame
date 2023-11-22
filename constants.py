@@ -1,7 +1,7 @@
 # Colors.
-BACK_COLOR = "#6d785c"   # Light green
-SHADE_COLOR = "#61705b"  # Dark green
-LINE_COLOR = "#000000"   # Black
+BACK_COLOR = (109, 120, 92)  # Light green
+SHADE_COLOR = (97, 112, 91)  # Dark green
+LINE_COLOR = (0, 0, 0)       # Black
 
 # Window sizes.
 _SCREEN_RES = {"GIGA":   (666, 1326),

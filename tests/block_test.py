@@ -84,11 +84,8 @@ class Client(BaseClient):
             # Test `BlinkingBlock`'s blinking: by visual checking
             # and tracking its `image` attribute for 5 seconds.
             if t <= 10*FPS:
-                print(
-                    [blink.image == blink._image
-                     for blink in self.entities[2]
-                     ]
-                )
+                for blink in self.entities[2]:
+                    print(blink.image == blink._image)
 
             # Test `Bomb`'s methods.
             # Change for `"down"` to test the `Bomb`'s behavior when it
