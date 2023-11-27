@@ -11,7 +11,7 @@ All screens constructed and drawn at runtime as `pygame.Surface`
 objects, and must be instantiated to be shown.
 
 Except for `high_scores`, each of the screens is made of an arrangement
-of dark `Block`s on top of a 10x20 grid of lighter `Block`s.
+of dark `Block`s on top of a 20x10 grid of lighter `Block`s.
 """
 
 import json
@@ -45,7 +45,7 @@ class BaseScreen(ABC):
     @abstractmethod
     def draw(self, surface):
         """
-        Positioning the `Block` objects in a 10x20 grid.
+        Positioning the `Block` objects in a 20x10 grid.
 
         Parameters
         ----------
@@ -57,11 +57,11 @@ class BaseScreen(ABC):
 
 
 class Background(BaseScreen):
-    """ A 10x20 grid of `Block` sprites colored ``SHADE_COLOR``. """
+    """ A 20x10 grid of `Block` sprites colored ``SHADE_COLOR``. """
 
     def draw(self, surface):
         """
-        Positioning the `Block` objects in a 10x20 grid.
+        Positioning the `Block` objects in a 20x10 grid.
 
         Parameters
         ----------
@@ -96,7 +96,7 @@ class VictoryScreen(BaseScreen):
     
     def draw(self, surface):
         """
-        Positioning the `Block` objects in a 10x20 grid.
+        Positioning the `Block` objects in a 20x10 grid.
 
         Parameters
         ----------
@@ -136,7 +136,7 @@ class DefeatScreen(BaseScreen):
     
     def draw(self, surface):
         """
-        Positioning the `Block` objects in a 10x20 grid.
+        Positioning the `Block` objects in a 20x10 grid.
 
         Parameters
         ----------
@@ -184,7 +184,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -228,7 +228,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -272,7 +272,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -316,7 +316,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -360,7 +360,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -404,7 +404,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -448,7 +448,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -492,7 +492,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -536,7 +536,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -580,7 +580,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -624,7 +624,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -668,7 +668,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
@@ -714,7 +714,7 @@ class Newgamei(BaseScreen):
     
     def draw(self, surface):
         """
-        Positioning the `Block` objects in a 10x20 grid.
+        Positioning the `Block` objects in a 20x10 grid.
 
         Parameters
         ----------

@@ -302,7 +302,7 @@ class GamePreview:
         
         def draw(self, surface):
             """
-            Positioning the `Block` objects in a 10x20 grid.
+            Positioning the `Block` objects in a 20x10 grid.
 
             Parameters
             ----------
