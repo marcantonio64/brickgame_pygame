@@ -27,8 +27,10 @@ class Breakout(Game):
     """
 
     _total = 0
+    """ Previous number of target Blocks. """
     number = 0
-    start_speed = 20
+    start_speed = 15
+    speeds = (start_speed, 2*start_speed)
     entities = {"target": pygame.sprite.RenderPlain(),
                 "ball":   pygame.sprite.RenderPlain(),
                 "paddle": pygame.sprite.RenderPlain(),
@@ -68,7 +70,7 @@ class Breakout(Game):
                 elif key == K_RIGHT:
                     self.Paddle.direction = "right"
                 elif key == K_SPACE:
-                    self.speed *= 2
+                    self.speed = Breakout.speeds[1]
 
             if state == KEYUP:  # Key released.
                 if key == K_LEFT:
@@ -76,7 +78,7 @@ class Breakout(Game):
                 elif key == K_RIGHT:
                     self.Paddle.direction = ""
                 elif key == K_SPACE:
-                    self.speed /= 2
+                    self.speed = Breakout.speeds[0]
     
     def manage(self, t):
         """
@@ -136,7 +138,7 @@ class Breakout(Game):
     def manage_levels(self):
         """ Turns to the next stage upon clearing the current one. """
 
-        if not Breakout.entities["target"]:
+        if self.level <= 3 and not Breakout.entities["target"]:
             # Toggle the next stage.
             print("Stage", self.level, "cleared")
             self.level += 1
@@ -161,10 +163,7 @@ class Breakout(Game):
             Whether the game has been beaten.
         """
 
-        if self.level == 4:
-            return True
-        else:
-            return False
+        return self.level == 4
     
     def check_defeat(self):
         """
@@ -176,10 +175,7 @@ class Breakout(Game):
             Whether the game was lost.
         """
 
-        if self.ball.coords[1] > 19:
-            return True
-        else:
-            return False
+        return self.ball.coords[1] > 19
     
     class Target:
         """
@@ -198,7 +194,9 @@ class Breakout(Game):
             level : int
                 Current stage.
             """
-
+            
+            self.block = {}
+            
             # Clean the `target`'s drawing and references.
             Breakout.entities["target"].empty()
 
@@ -213,8 +211,6 @@ class Breakout(Game):
                           7: (0,                         9),
                           8: (0,                         9),
                           9: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)}
-
-                self.block = {}
                 for j in sketch.keys():
                     for i in sketch[j]:
                         self.block[(i, j)] = Block(i, j)
@@ -228,7 +224,6 @@ class Breakout(Game):
                           4: (   1, 2, 3,       6, 7, 8   ),
                           5: (0, 1, 2,             7, 8, 9),
                           6: (0, 1,                   8, 9)}
-                self.block = {}
                 for j in sketch.keys():
                     for i in sketch[j]:
                         self.block[(i, j)] = Block(i, j)
@@ -242,16 +237,15 @@ class Breakout(Game):
                           4: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
                           5: (0,          4, 5,          9),
                           6: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)}
-                self.block = {}
                 for j in sketch.keys():
                     for i in sketch[j]:
                         self.block[(i, j)] = Block(i, j)
                         self.block[(i, j)].add(Breakout.entities["target"])
 
-            Breakout._total = len(self.block)
+            Breakout._total = len(self.block) if level <= 3 else 1
             Breakout.number = Breakout._total
 
-            # Model for more stages
+            # Template for more stages
             #
             # sketch = {0: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
             #           1: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
@@ -259,7 +253,10 @@ class Breakout(Game):
             #           3: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
             #           4: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
             #           5: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-            #           6: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)}
+            #           6: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            #           7: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            #           8: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            #           9: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)}}
         
         def check_hit(self, ball):
             """
@@ -274,7 +271,7 @@ class Breakout(Game):
             a, b = ball.velocity
             i, j = ball.coords
             
-            # When the `ball` hits a corner...
+            # When the `ball` hits a corner between two target Blocks...
             if ((i+a, j) in self.block.keys()
                     and (i, j+b) in self.block.keys()):
                 # ... reverse both directions, ...
@@ -303,7 +300,7 @@ class Breakout(Game):
                     and (i, j+b) in self.block.keys()):
                 # ... reverse only its second coordinate, ...
                 ball.velocity = [a, -b]
-                # and destroy only the `Block` it hit.
+                # ... and destroy only the `Block` it hit.
                 self.block[(i, j+b)].kill()
                 del self.block[(i, j+b)]
             
@@ -351,7 +348,7 @@ class Breakout(Game):
             
             # Set the `paddle`'s initial position.
             self.blocks = [Block(3, 19), Block(4, 19), Block(5, 19)]
-            self._size = len(self.blocks) - 1
+            self._size = len(self.blocks)
 
             # Add the `ball` to the `paddle` initially to allow for a
             # launching choice.
@@ -379,7 +376,7 @@ class Breakout(Game):
             for block in self.blocks:
                 i, j = block.coords
                 # Ensures the `paddle` will remain within the screen.
-                if 0 <= i_0+a < 10-self._size:
+                if 0 <= i_0+a <= 10-self._size:
                     block.set_position(i+a, j)
 
             # Update the `paddle`'s coordinates.
@@ -388,7 +385,8 @@ class Breakout(Game):
             # Launch mechanics at the start of the stage (the `ball` is
             # released from the `paddle` if *Space* is pressed).
             if speed > Breakout.start_speed:
-                if (len(self.coords) == 4  # Stage start conditions.
+                # Stage start conditions.
+                if (len(self.coords) == self._size + 1
                         and Breakout.number == Breakout._total):
                     Breakout.entities["paddle"].remove(self.ball)
                     self.blocks.pop()
@@ -408,8 +406,8 @@ class Breakout(Game):
                 # The `ball` will become part of the `paddle` for exactly
                 # one iteration.
                 self.ball.displacement = [0, 0]  # Won't move on its own.
-                Breakout.Paddle.dragging = not self.dragging
-                if self.dragging:
+                Breakout.Paddle.dragging = not Breakout.Paddle.dragging
+                if Breakout.Paddle.dragging:
                     self.blocks.append(self.ball)
                     Breakout.entities["paddle"].add(self.ball)
                 else:
@@ -426,17 +424,17 @@ class Breakout(Game):
         def check_paddle_reflect(self):
             """ Hypothesis for when the ``ball`` reflects from the ``paddle``. """
 
-            if not self.dragging:
+            if not Breakout.Paddle.dragging:
                 a, b = self.ball.velocity
                 i, j = self.ball.coords
-                # Reflection occurs if the `ball` hits the `paddle`
+                # Reflection occurs if the `ball` hits the `paddle` directly
                 # from above or at a vertex.
                 if ((i, j+b) in self.coords[:self._size]
                         or (i+a, j+b) in self.coords[:self._size]):
                     # Reverse the vertical coordinate.
                     self.ball.velocity[1] = -1
-                    # Depending on where the ball hits the `paddle`,
-                    # horizontal reflection may or may not happen.
+                    # Horizontal reflection happens only when the paddle
+                    # is hit at a vertex.
                     if ((i, j+b) == self.coords[0]
                             or (i+a, j+b) == self.coords[0]):
                         # The ball moves left if it hit the left corner

@@ -24,14 +24,14 @@ The client's interface. It is composed of the game previews
 (3 looping images), ordered alphabetically with capital letters,
 and a High-Scores screen.
 
-The High Scores values are stored in the *high-scores.json* file.
+The High Scores values are stored in the `high-scores.json` file.
 You can reset the values manually or simply by deleting the file before
 running the program again.
 
 ### Keybindings
 
 Use the directional keys **Left** and **Right** to see the available games
-and the High Scores screen.
+and the High-Scores screen.
 
 Press **Return** to start/continue a game.
 
@@ -82,7 +82,7 @@ them from reaching the bottom of the grid.
 A `Bomb` may occasionally appear to help you.
 
 > To deactivate the `Bomb` mechanics, access the module
-> *...\brickgame_pygame\games\asteroids.py* and change the value of the
+> `...\brickgame_pygame\games\asteroids.py` and change the value of the
 > constant `USE_BOMBS` to `False`.
 
 ### Keybindings
@@ -94,10 +94,6 @@ Use the directional keys **Left** and **Right** to move the `Shooter`.
 Control the falling `Piece` objects (also known as *tetrominoes*) and
 form full lines. If the `Fallen` structure reaches the top of the grid,
 **you lose**.
-
-> To activate the `Bomb` mechanics, access the module
-> `brickgame_pygame\games\tetris.py` and change the value of the
-> constant `USE_BOMBS` to `True`.
 
 ## Keybindings
 

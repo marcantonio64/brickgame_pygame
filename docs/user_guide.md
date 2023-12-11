@@ -4,15 +4,16 @@ Instructions on how to expand the project.
 
 ## Adding more games/updating
 
-New game modules should be in `...\brickgame_pygame\games\`. 
+New game modules should be in `...\brickgame_pygame\games`. 
 The general rules for consistency are:
 
 ### Import statements
-The general constants/game elements are defined at 
+The general game structure is defined at 
 `...\brickgame_pygame\games\game_engine.py`.
+
 For each new game, the standard imports are:
 
-```python3
+```python
 import pygame
 from pygame.locals import *
 from ..constants import *
@@ -26,10 +27,10 @@ your preference.
   
 ### Class structure
 The class containing the new game should implement `Game` and 
-be imported to `...\brickgame_pygame\__main__.py`.
+be imported into `...\brickgame_pygame\__main__.py`.
 The class may follow this template:
 
-```python3
+```python
 class NewGame(Game):
     """
     Implements `Game` with a new game.
@@ -108,7 +109,7 @@ class NewGame(Game):
     
     def check_victory(self):
         """
-        Victory occurs when "...".
+        Victory occurs when ...
 
         Returns
         -------
@@ -123,7 +124,7 @@ class NewGame(Game):
     
     def check_defeat(self):
         """
-        Defeat happens if "...".
+        Defeat happens if ...
 
         Returns
         -------
@@ -159,7 +160,7 @@ class NewGame(Game):
 To run the game/check for errors, you will need to create an
 instance of `Client`, for which you can follow this template:
 
-```python3
+```python
 class Client(BaseClient):
     """ A client for :class:`NewGame`. """
 
@@ -207,7 +208,7 @@ class Client(BaseClient):
 After which you can set up the `if __name__ == '__main__'`
 statement:
 
-```python3
+```python
 def main():
     """ Output-generating commands. """
 
@@ -226,8 +227,8 @@ when running the full package:
   `from newgame import NewGame`;
 * Update the file `...\brickgame_tkinter\high-scores.json` by 
   changing the `Brickgame.__init__()` constructor, adding 
-  `"NewGame": 0,` in `json.dumps()` at the `try` statement (line
-  36).
+  `"NewGame": 0,` in `json.dumps()` at the `try` statement (around
+  line 36).
   Before:
   ```python
   # Create the .json file, if it doesn't already exist.
@@ -262,8 +263,9 @@ when running the full package:
       print(e)
   ```
 * Update the `Brickgame.Selector.__init__()` constructor by 
-  adding `n: NewGame(),` to `self.select` (`n` is the new 
-  number of games).
+  adding `n: NewGame(),` to `self.select` (around line 114)
+  (`n` is the new number of games).
+  
   Before:
   ```python
   self.select = {1: Snake(),
@@ -284,10 +286,10 @@ when running the full package:
   
 ### Updates in `...\brickgame_tkinter\screen_generator.py`
 The image previews for each game are built and drawn when running 
-the game using the *screen_generator.py* module. To create the 
+the game using the `screen_generator.py` module. To create the 
 previews for the new game, you will need to add three new nested 
 classes in `screen_generator.GamePreview` with this format:
-```python3
+```python
 class GamePreview:
     """ Organizes the game preview screens. """
     
@@ -329,7 +331,7 @@ class GamePreview:
 
 An example for `sketch`:
 
-```python3
+```python
     sketch = { 0: (                            ),
                1: (                            ),
                2: (                            ),

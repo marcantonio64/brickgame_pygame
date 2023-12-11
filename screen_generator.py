@@ -757,7 +757,7 @@ def show_high_scores():
     screen = pygame.display.get_surface()
 
     # Update the window title.
-    pygame.display.set_caption("High scores")
+    pygame.display.set_caption("High Scores")
 
     # Set a background.
     screen.fill(BACK_COLOR)

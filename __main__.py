@@ -1,4 +1,4 @@
-""" Entry point to the execution of the main package. """
+""" Entry point for the execution of the main package. """
 
 import json
 import pygame
@@ -16,7 +16,7 @@ from .games.tetris import Tetris
 
 class Brickgame(BaseClient):
     """
-    Manages all the console and game mechanics and interactions
+    Manages all the console and game mechanics and their interactions.
 
     Attributes
     ----------
@@ -96,8 +96,9 @@ class Brickgame(BaseClient):
                 if (key, state) == (K_BACKSPACE, KEYDOWN):
                     Brickgame.environment = "selector"
                     pygame.display.set_caption("Game Selection")
-                # Shift to `game` keybindings otherwise.
-                self.game.handle_events(key, state)
+                else:
+                    # Shift to `game` keybindings otherwise.
+                    self.game.handle_events(key, state)
     
     class Selector:
         """ Mechanics for game selection, previews, and high scores. """
@@ -142,8 +143,8 @@ class Brickgame(BaseClient):
                         # twice after endgames.
                         if not Brickgame.game.running:
                             Brickgame.game.reset()
-                        if self.name == "Tetris":
-                            Brickgame.game.piece.preview()
+                        #if self.name == "Tetris":
+                        #    Brickgame.game.piece.preview()
                 # Choosing a game.
                 elif key == K_LEFT:
                     if self.stage_id > 1:
@@ -166,9 +167,9 @@ class Brickgame(BaseClient):
             """
             Toggle game previews.
 
-            Iterates through each game previews, with 3 frames per
-            second. The previews were built using the coordinates, in
-            the :mod:`_screen_generator`_ module.
+            Iterates through each game's previews, with 3 frames per
+            second. The previews were built using pixel images, in the
+            :mod:`_screen_generator`_ module.
 
             Parameters
             ----------

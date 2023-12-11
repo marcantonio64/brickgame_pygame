@@ -28,6 +28,8 @@ class Snake(Game):
     """
 
     direction = "down"
+    start_speed = 10
+    speeds = (start_speed, 2*start_speed)
     growing = False
     entities = {"body": pygame.sprite.RenderPlain(),
                 "food": pygame.sprite.RenderPlain(),
@@ -37,10 +39,9 @@ class Snake(Game):
         """ Initialize instance attributes and instantiate game objects. """
 
         super().__init__()
-        self.speed = 10
+        self.speed = Snake.start_speed
         self.key_enabled = False
-        """ Allows only one directional movement at a time. """
-
+        
         # Spawn the entities.
         self.snake = self.Body()
         self.food = self.Food()
@@ -69,7 +70,7 @@ class Snake(Game):
         if self.running:
             if state == KEYDOWN:  # Key pressed.
                 if key == K_SPACE:
-                    self.speed *= 2
+                    self.speed = Snake.speeds[1]
                 # Lock direction changes after the first until the next iteration.
                 elif self.key_enabled:
                     self.key_enabled = False
@@ -85,7 +86,7 @@ class Snake(Game):
 
             if state == KEYUP:  # Key released.
                 if key == K_SPACE:
-                    self.speed /= 2
+                    self.speed = Snake.speeds[0]
     
     def manage(self, t):
         """
@@ -142,11 +143,7 @@ class Snake(Game):
             Whether the game has been beaten.
         """
 
-        n = len(self.snake.segments)
-        if n == 200:
-            return True
-        else:
-            return False
+        return len(self.snake.segments) == 200
     
     def check_defeat(self):
         """

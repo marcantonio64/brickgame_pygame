@@ -9,7 +9,7 @@ asteroids, and tetris.
 The aspect is of a 20x10 grid of `Block` objects, which are used
 as pixels for the construction of each game.
 
-> A `Block` is drawn to a `tkinter.Canvas` object as an outer
+> A `Block` is built as a `Sprite` to a `Surface` object as an outer
 empty square containing a smaller filled square.
 
 A manual with the rules and controls of each game can be found on
@@ -17,7 +17,7 @@ A manual with the rules and controls of each game can be found on
 be seen on `...\brickgame_pygame\docs\user_guide.md`.
 
 ## Installation
-In the command line, after setting up your directory:
+In the command line, after setting up your directory, download the project with:
 
 ```shell
 git clone https://github.com/marcantonio64/brickgame_pygame.git
@@ -31,7 +31,7 @@ python -m brickgame_pygame
 ```
 
 If you want to play a specific game directly, simply add `.games.` and
-the name of the game, for instance:
+the name of the game, for example:
 
 ```shell
 python -m brickgame_pygame.games.tetris
