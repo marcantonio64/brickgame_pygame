@@ -5,14 +5,12 @@ import pygame
 from pygame.locals import *
 from ..constants import *
 from ..client import BaseClient
-from ..block import Block, Bomb
+from ..block import Block
 from . import game_manuals
 from .game_engine import Game
 
 __doc__ = "".join([__doc__, "\n\nCheck `", game_manuals, "` for instructions."])
 __all__ = ["Tetris"]
-
-USE_BOMBS = False
 
 
 class Tetris(Game):
@@ -35,8 +33,7 @@ class Tetris(Game):
         """ Initialize instance attributes and instantiate game objects. """
 
         super().__init__()
-        self.__start = 0
-        self.__bomb_at_bottom = False
+        self.__start = 1
         self.speed = Tetris.start_speed  # Fall speed (in `Block`s per second).
 
         # Spawn the entities.
@@ -44,11 +41,11 @@ class Tetris(Game):
         self.fallen = self.FallenBlocks()  # Fallen remains
 
     def _detect_game_on(self):
-        """ Prevent the first preview from showing in the main client. """
+        """ Prints a first preview only when the game is played. """
 
-        if self.__start:
-            self.piece.preview()
-        self.__start += 1
+        if not self.__start:
+            self.piece.print_preview()
+        self.__start -= 1
     
     def handle_events(self, key, state):
         """
@@ -77,10 +74,7 @@ class Tetris(Game):
                     self.Piece.direction = "right"
                 elif key == K_SPACE:
                     self.piece.fall_inst()
-                    if (self.piece.active_shape == "B"
-                            and self.piece.coords[1] < 17):
-                        self.piece.move("down")
-                    self.try_spawn_next()
+                    self.spawn_next()
                 # Set `switch()`.
                 elif key == K_RSHIFT:
                     if not self.piece.lock_switch:
@@ -105,7 +99,7 @@ class Tetris(Game):
         """
 
         if self.running and not self.paused:
-            # self._detect_game_on()
+            self._detect_game_on()
             # Set the action rate at `speed` `Block`s per second.
             if t % int(FPS/self.speed) == 0:
                 self.piece.move("down")  # Slow fall
@@ -120,7 +114,6 @@ class Tetris(Game):
             if t % int(FPS/(7 + 3*self.speed)) == 0:
                 # Horizontal movement and downwards acceleration.
                 self.piece.move(self.piece.direction)
-                self.try_spawn_next()
 
         super().manage()  # Manage endgame.
     
@@ -142,39 +135,20 @@ class Tetris(Game):
         """ `piece`s spawn when they stop falling. """
 
         if self.piece.height == 0:
-            if self.piece.active_shape != "B":  # Normal `piece`
-                self.spawn_next()
-            else:  # `Bomb` colliding:
-                _, j = self.piece.coords
-                bomb = self.piece.bomb
-                # With the `fallen` structure.
-                if bomb.check_explosion(
-                    target_group=Tetris.entities["fallen"]
-                ):
-                    Tetris.entities["piece"].empty()
-                    self.spawn_next()
-                elif j == 17:
-                    if self.__bomb_at_bottom:
-                        bomb.explode(
-                            target_group=Tetris.entities["fallen"]
-                        )
-                        Tetris.entities["piece"].empty()
-                        self.spawn_next()
-                    self.__bomb_at_bottom = not self.__bomb_at_bottom
+            self.spawn_next()
 
     def spawn_next(self):
 
-        if self.piece.active_shape != "B":  # Normal `piece`
-            # Transfer the `piece`'s `Block`s to the `fallen` structure.
-            self.fallen.grow()
-            # Account for a proper score according to the lines cleared.
-            full_lines_number = self.fallen.remove_full_lines()
-            self.update_score(full_lines_number)
+        # Transfer the `piece`'s `Block`s to the `fallen` structure.
+        self.fallen.grow()
+        # Account for a proper score according to the lines cleared.
+        full_lines_number = self.fallen.remove_full_lines()
+        self.update_score(full_lines_number)
         
         # Reset height and spawn a new `Piece` object.
         self.piece.height = 18
         self.piece = self.Piece()
-        self.piece.preview()
+        self.piece.print_preview()
     
     def check_victory(self):
         """
@@ -197,10 +171,7 @@ class Tetris(Game):
             Whether the game was lost.
         """
         
-        if self.fallen.height > 20:
-            return True
-        else:
-            return False
+        return self.fallen.height > 20
     
     class Piece:
         """
@@ -213,13 +184,10 @@ class Tetris(Game):
             ``"down"`` to accelerate the fall).
         stored_shape : str
             A character representing the next `Tetris.Piece`'s shape.
-        bomb : Bomb
-            A dummy `Bomb` outside the grid.
         """
 
         direction = ""
         stored_shape = ""
-        bomb = Bomb(-5, -5)
 
         def __init__(self):
             """ Spawn and preview. """
@@ -231,45 +199,25 @@ class Tetris(Game):
             self.coords = None
             self.piece = None
 
-            # Initialize `self.bomb` with a dummy. Effective `Bomb`s
-            # will only appear if `USE_BOMBS` is True.
-            self.bomb = Tetris.Piece.bomb
-            # `Bomb` spawn rate: 5% at every spawn, if activated.
-            r, = random.choices((USE_BOMBS, False), cum_weights=(0.05, 1), k=1)
-            if r:  # `Bomb`s are treated as `Piece` objects.
-                Tetris.entities["piece"].empty()
-                self.bomb = Bomb(3, -1, group=Tetris.entities["piece"])
-                self.coords = [3, -1]
-                self.piece = self.bomb._bombs[-1]
-                # Dummy `self.blocks` to use the `Piece` mechanics.
-                self.blocks = {1: (1, self.piece)}
-                # Dummy `active_shape`.
-                self.active_shape = "B"
-                # Spawn a `Bomb` piece.
-                self.spawn()
-                # `Bomb`s cannot be switched.
-                self.lock_switch = True
-            
-            else:  # 95% of the time, though, a normal piece will spawn.
-                # If there is any `Tetris.Piece.stored_shape`, store
-                # its value into `self.active_shape`.
-                if Tetris.Piece.stored_shape:
-                    self.active_shape = Tetris.Piece.stored_shape
-                else:
-                    # Otherwise, choose the value of `active_shape`
-                    # randomly.
-                    self.active_shape = random.choice(
-                        ("T", "J", "L", "S", "Z", "I", "O")
-                    )
-                # Store a new shape.
-                Tetris.Piece.stored_shape = random.choice(
+            # If there is any `Tetris.Piece.stored_shape`, store
+            # its value into `self.active_shape`.
+            if Tetris.Piece.stored_shape:
+                self.active_shape = Tetris.Piece.stored_shape
+            else:
+                # Otherwise, choose the value of `active_shape`
+                # randomly.
+                self.active_shape = random.choice(
                     ("T", "J", "L", "S", "Z", "I", "O")
                 )
-                # Spawn a `Piece` object with the `active_shape`.
-                self.spawn()
-                # Permit one switch between `active_shape` and
-                # `stored_shape`.
-                self.lock_switch = False
+            # Store a new shape.
+            Tetris.Piece.stored_shape = random.choice(
+                ("T", "J", "L", "S", "Z", "I", "O")
+            )
+            # Spawn a `Piece` object with the `active_shape`.
+            self.spawn()
+            # Permit one switch between `active_shape` and
+            # `stored_shape`.
+            self.lock_switch = False
         
         def spawn(self):
             """ Draw the desired piece on the screen, at top center. """
@@ -277,10 +225,11 @@ class Tetris(Game):
             self.place(self.active_shape, 4, 0)
             # Identify the next rotated position.
             self.next_id, self.piece = self.blocks[1]
+            Tetris.entities["piece"].empty()
             Tetris.entities["piece"].add(*self.piece)
         
-        def preview(self):
-            """ Showcase a message with `stored_shape` at the Terminal. """
+        def print_preview(self):
+            """ Showcase `stored_shape`. """
 
             if Tetris.Piece.stored_shape == "T":
                 drawing = "".join([
@@ -362,7 +311,7 @@ class Tetris(Game):
             self.height = 19
 
             self.spawn()
-            self.preview()
+            self.print_preview()
             
             self.lock_switch = True  # Only once for every new `piece`.
         
@@ -424,7 +373,7 @@ class Tetris(Game):
         
         def calculate_dimensions(self):
             """
-            Track the boundary dimensions of each `Piece`.
+            Track the boundary dimensions of each `Piece` and update `height`.
 
             Returns
             -------
@@ -482,7 +431,7 @@ class Tetris(Game):
             ``"down"`` to accelerate the fall).
             """
 
-            # Get all the necessary dimensions to detect whether
+            # Gatter all the necessary dimensions to detect whether
             # movement is possible
             a, b = CONVERT[direction]
             i, j = self.coords
@@ -500,9 +449,8 @@ class Tetris(Game):
                 [block.coords
                  for block in Tetris.entities["fallen"]]
             )
-            # Movement can happen if these sets don't intersect,
-            if (X & Y == set()  # or if a `Bomb` moves `"down"`.
-                    or self.active_shape == "B" and direction == "down"):
+            # Movement can only happen if these sets don't intersect.
+            if X & Y == set():
                 # Check also if the movement won't get any `Block`
                 # outside screen boundaries.
                 if 0 <= i_min+a and i_max+a < 10 and j_max+b < 20:
@@ -514,60 +462,58 @@ class Tetris(Game):
                         block.set_position(i+a, j+b)
         
         def rotate(self):
-            if len(self.blocks[1][1]) == 4:  # Avoids rotating a `Bomb`.
-                # First set: desired new positions of the `piece`'s
-                # `Block`s if rotation were to happen.
-                X = set([block.coords
-                         for block in self.blocks[self.next_id][1]])
-                # Second set: current positions of `Block`s in the
-                # fallen structure.
-                Y = set([block.coords
-                         for block in Tetris.entities["fallen"]])
-                # Third set: positions outside the borders in the
-                # rotation.
-                Z = set([(i, j)
-                         for (i, j) in X
-                         if not (0 <= i < 10 and j < 20)])
-                # If the rotated `piece` doesn't collide with the
-                # structure and remains inside the grid, then movement
-                # occurs.
-                if X & Y == set() and Z == set():
-                    # Erase the current `piece` from the screen.
-                    Tetris.entities["piece"].empty()
-                    # Replace it with another with the next rotated state.
-                    self.place(self.active_shape, *self.coords)
-                    # Update the rotating id and draw the `piece`'s
-                    # `Block`s.
-                    self.next_id, self.piece = self.blocks[self.next_id]
-                    Tetris.entities["piece"].add(*self.piece)
+            # First set: desired new positions of the `piece`'s
+            # `Block`s if rotation were to happen.
+            X = set([block.coords
+                     for block in self.blocks[self.next_id][1]])
+            # Second set: current positions of `Block`s in the
+            # fallen structure.
+            Y = set([block.coords
+                     for block in Tetris.entities["fallen"]])
+            # Third set: positions outside the borders in the
+            # rotation.
+            Z = set([(i, j)
+                     for (i, j) in X
+                     if not (0 <= i < 10 and j < 20)])
+            # If the rotated `piece` doesn't collide with the
+            # structure and remains inside the grid, then movement
+            # occurs.
+            if X & Y == set() and Z == set():
+                # Erase the current `piece` from the screen.
+                Tetris.entities["piece"].empty()
+                # Replace it with another with the next rotated state.
+                self.place(self.active_shape, *self.coords)
+                # Update the rotating id and draw the `piece`'s
+                # `Block`s.
+                self.next_id, self.piece = self.blocks[self.next_id]
+                Tetris.entities["piece"].add(*self.piece)
         
         def fall_inst(self):
             """ Instant fall, moving down a piece by its full ``height``. """
 
             i, j = self.coords
-            self.calculate_dimensions()  # Get current `height`.
+            # Get current `height`.
+            self.calculate_dimensions()
             # Update `blocks`.
             self.place(self.active_shape, i, j+self.height)
-
             # Move down by `self.height`.
             for block in Tetris.entities["piece"]:
                 a, b = block.coords
                 block.set_position(a, b+self.height)
     
     class FallenBlocks:
-        """ Structure formed by the fallen piece's `Block`s. """
+        """ The structure formed by the fallen piece's `Block`s. """
 
         def __init__(self):
             self.height = 0  # Not the same as `piece.height`.
 
         def grow(self):
-            """ Making a `Piece` part of the structure. """
+            """ Making `Piece` part of the structure. """
 
             # Transfer the `Block`s from the `"piece"` group to the
             # `"fallen"` group.
-            if len(Tetris.entities["piece"]) == 4:  # Exclude `Bomb`.
-                for block in Tetris.entities["piece"]:
-                    block.add(Tetris.entities["fallen"])
+            for block in Tetris.entities["piece"]:
+                block.add(Tetris.entities["fallen"])
             Tetris.entities["piece"].empty()
 
             # Update the structure's height.
@@ -580,7 +526,7 @@ class Tetris(Game):
         def remove_full_lines(self):
             full_lines = []
             # Group all the completed lines (with 10 aligned `Block`s)
-            # in `full_lines`.
+            # into `full_lines`.
             for b in range(20):
                 line = [block
                         for block in Tetris.entities["fallen"]
