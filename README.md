@@ -21,20 +21,25 @@ In the command line, after setting up your directory, download the project with:
 
 ```shell
 git clone https://github.com/marcantonio64/brickgame_pygame.git
-python setup.py install
 ```
 
-Then run the game package with:
+After that, proceed to install the required dependencies with:
+
+### Windows
+
+```shell
+python brickgame_pygame\setup.py install
+```
+
+### Linux/MacOS
+```bash
+$ python brickgame_pygame/setup.py install
+```
+
+Finally, run the game package with:
 
 ```shell
 python -m brickgame_pygame
-```
-
-If you want to play a specific game directly, simply add `.games.` and
-the name of the game, for example:
-
-```shell
-python -m brickgame_pygame.games.tetris
 ```
 
 ## Inspirations
