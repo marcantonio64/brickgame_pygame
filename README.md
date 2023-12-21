@@ -46,12 +46,12 @@ python -m brickgame_pygame
 Gustavo Barbieri's pygame tutorial: [Introduction to Game Development using PyGame](https://old.gustavobarbieri.com.br/jogos/jogo/doc/).
 
 ## Metadata
-Author: marcantonio64
+**Author:** [marcantonio64](https://github.com/marcantonio64/)
 
-Contact: mafigueiredo08@gmail.com
+**Contact:** [mafigueiredo08@gmail.com](mailto:mafigueiredo08@gmail.com)
 
-Date: 11-Nov-2023
+**Date:** 11-Nov-2023
 
-License: MIT
+**License:** MIT
 
-Python: v3.6+
+**Python:** v3.6+
